@@ -14,11 +14,11 @@ from camera_input_live import camera_input_live
 from PIL import Image, ImageOps, ImageDraw
 from pyzbar.pyzbar import decode
 
-if not cookie_manager.ready():
-    st.stop()
-
 cookie_manager = st_xcomps.CookieManager(key="my_cookie_manager")
 username = cookie_manager.get(cookie="username")
+
+if not cookie_manager.ready():
+    st.stop()
 
 if not current_user:
     # Cookieに名前がない場合（初回など）は入力してもらう
