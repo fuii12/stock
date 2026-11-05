@@ -1,4 +1,4 @@
 streamlit
-streamlit-camera-input-live
+requests
+Pillow
 pyzbar
-extra-streamlit-components
