@@ -14,9 +14,6 @@ from camera_input_live import camera_input_live
 from PIL import Image, ImageOps, ImageDraw
 from pyzbar.pyzbar import decode
 
-
-cookie_manager = st_xcomps.CookieManager()
-
 if not cookie_manager.ready():
     st.stop()
 
