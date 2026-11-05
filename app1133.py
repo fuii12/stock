@@ -20,6 +20,7 @@ cookie_manager = st_xcomps.CookieManager()
 if not cookie_manager.ready():
     st.stop()
 
+cookie_manager = st_xcomps.CookieManager(key="my_cookie_manager")
 username = cookie_manager.get(cookie="username")
 
 if not current_user:
