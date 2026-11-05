@@ -14,7 +14,7 @@ from PIL import Image, ImageOps, ImageDraw
 from pyzbar.pyzbar import decode
 from streamlit_cookies_manager import EncryptedCookieManager
 
-cookie_pw = get_secret("COOKIES_PASSWORD")
+cookie_pw = get_secret("aiueo")
 if not cookie_pw:
     cookie_pw = "default_fallback_password_change_me_12345"
 
