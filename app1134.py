@@ -12,6 +12,50 @@ import streamlit as st
 from camera_input_live import camera_input_live
 from PIL import Image, ImageOps, ImageDraw
 from pyzbar.pyzbar import decode
+from streamlit_cookies_manager import EncryptedCookieManager
+
+cookie_pw = get_secret("COOKIES_PASSWORD")
+if not cookie_pw:
+    cookie_pw = "default_fallback_password_change_me_12345"
+
+cookies = EncryptedCookieManager(
+    prefix="uchinostock_",
+    password=cookie_pw
+)
+
+if not cookies.ready():
+    st.stop()
+
+INACTIVITY_TIMEOUT = 1800
+
+
+def require_login():
+    # 1. すでに session_state に認証がある場合
+    if st.session_state.get("authed"):
+        last_active = st.session_state.get("last_active", time.time())
+        if time.time() - last_active > INACTIVITY_TIMEOUT:
+            st.session_state.clear()
+            cookies["authed"] = False
+            cookies.save()
+            st.warning("⚠️ 一定期間操作がなかったため、セキュリティ上ログアウトしました。")
+        else:
+            st.session_state["last_active"] = time.time()
+            return
+
+    # 2. session_state が無いが、Cookieにログイン情報が残っている場合（自動ログイン）
+    elif cookies.get("authed") == "True" and cookies.get("username"):
+        saved_username = cookies.get("username")
+        cursor.execute("SELECT id, username, line_token, avatar_blob FROM users WHERE username = ?", (saved_username,))
+        row = cursor.fetchone()
+        if row:
+            st.session_state["authed"] = True
+            st.session_state["user_id"] = row[0]
+            st.session_state["user"] = row[1]
+            st.session_state["line_token"] = row[2]
+            st.session_state["avatar_blob"] = row[3]
+            st.session_state["viewing_uid"] = row[0]
+            st.session_state["last_active"] = time.time()
+            return
 
 LOCATIONS = ["パントリー", "冷蔵庫", "洗面所", "その他"]
 OFF_URL = "https://world.openfoodfacts.org/api/v2/product/{code}.json"
