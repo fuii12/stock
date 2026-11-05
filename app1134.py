@@ -57,6 +57,14 @@ def require_login():
             st.session_state["last_active"] = time.time()
             return
 
+if st.button("ログアウト"):
+    st.session_state.clear()
+    # ▼ Cookieの破棄
+    cookies["authed"] = "False"
+    cookies["username"] = ""
+    cookies.save()
+    st.rerun()
+
 LOCATIONS = ["パントリー", "冷蔵庫", "洗面所", "その他"]
 OFF_URL = "https://world.openfoodfacts.org/api/v2/product/{code}.json"
 DEFAULT_ICON_PATH = r"Z:\卒業研究\グループフォルダ\うちのストック\うちのストック(仮).jpg"
