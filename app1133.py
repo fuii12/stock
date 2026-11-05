@@ -8,20 +8,19 @@ import sqlite3
 import time
 from datetime import datetime, date
 import requests
+import extra_streamlit_components as st_xcomps
 import streamlit as st
 from camera_input_live import camera_input_live
 from PIL import Image, ImageOps, ImageDraw
 from pyzbar.pyzbar import decode
-import extra_streamlit_components as st_xcomps
+
 
 cookie_manager = st_xcomps.CookieManager()
 
 if not cookie_manager.ready():
     st.stop()
 
-current_user = cookie_manager.get(cookie="username")
-
-st.title("📦 うちのストック（Cookie連携版）")
+username = cookie_manager.get(cookie="username")
 
 if not current_user:
     # Cookieに名前がない場合（初回など）は入力してもらう
