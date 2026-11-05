@@ -1,2 +1,3 @@
 streamlit
 streamlit-camera-input-live
+pyzbar
