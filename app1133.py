@@ -12,6 +12,34 @@ import streamlit as st
 from camera_input_live import camera_input_live
 from PIL import Image, ImageOps, ImageDraw
 from pyzbar.pyzbar import decode
+import extra_streamlit_components as st_xcomps
+
+cookie_manager = st_xcomps.CookieManager()
+
+if not cookie_manager.ready():
+    st.stop()
+
+current_user = cookie_manager.get(cookie="username")
+
+st.title("📦 うちのストック（Cookie連携版）")
+
+if not current_user:
+    # Cookieに名前がない場合（初回など）は入力してもらう
+    st.info("最初にあなたの名前（またはニックネーム）を教えてください。")
+    with st.form("user_form"):
+        input_name = st.text_input("あなたの名前")
+        submitted = st.form_submit_button("保存する")
+        if submitted and input_name:
+            # 30日間有効なCookieをブラウザに保存
+            cookie_manager.set("username", input_name, max_age=60 * 60 * 24 * 30)
+            st.rerun()
+else:
+    st.success(f"ようこそ、**{current_user}** さん！")
+
+    # 別の人としてログインし直したい場合のリセットボタン
+    if st.button("ユーザー名を変更する"):
+        cookie_manager.delete("username")
+        st.rerun()
 
 LOCATIONS = ["パントリー", "冷蔵庫", "洗面所", "その他"]
 OFF_URL = "https://world.openfoodfacts.org/api/v2/product/{code}.json"
